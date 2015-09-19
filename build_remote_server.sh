@@ -1,7 +1,10 @@
+#/bin/bash
 
-USER=$(echo -n $(cat user))
-HOST=$(echo -n $(cat host))
-PUBKEY=$(echo -n $(cat ~/.ssh/id_rsa.pub))
+USER=`cat user`
+HOST=`cat host`
+PUBKEY=$(cat ~/.ssh/id_rsa.pub)
+
+echo "server: $HOST"
 
 echo "Install public key..."
 ssh -C root@$HOST "bash -s" <<EOF
@@ -15,7 +18,7 @@ ssh -C root@$HOST "bash -s" <<EOF
 useradd -m $USER
 mkdir -p /home/$USER/.ssh
 echo "$PUBKEY" > /home/$USER/.ssh/authorized_keys
-chown -R $UESR:$USER /home/$USER/.ssh
+chown -R $USER:$USER /home/$USER/.ssh
 chmod -R go-rw /home/$USER/.ssh
 EOF
 
@@ -23,6 +26,6 @@ echo "Update system and install packages..."
 ssh -C root@$HOST "bash -s" <<EOF
 apt-get update
 apt-get dist-upgrade -y
-apt-get install emacs tightvncserver xfce4 xfce4-goodies -y
+apt-get install emacs tightvncserver xfce4 xfce4-goodies pwgen chromium-browser rsync -y
 EOF
 

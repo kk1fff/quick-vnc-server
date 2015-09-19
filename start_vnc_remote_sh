@@ -1,10 +1,10 @@
-PASS=$(pwgen -syn 8)
-
 DISPLAY="1"
-DEPTH="16"
+DEPTH="8"
 GEOMETRY="1024x768"
 
-cat ~/.vnc/xstartup <<EOF
+mkdir -p ~/.vnc
+
+cat > ~/.vnc/xstartup <<EOF
 #!/bin/bash
 xrdb $HOME/.Xresources
 startxfce4
@@ -12,10 +12,11 @@ EOF
 
 chmod a+x ~/.vnc/xstartup
 
-vncpasswd > ~/.vnc/passed <<EOF
-$PASS
-EOF
+PW="$(pwgen -sn 8 -N 1)"
+echo $PW | vncpasswd -f > ~/.vnc/passwd
+chmod go-rw ~/.vnc/passwd
 
-/usr/bin/vncserver -depth ${DEPTH} -geometry ${GEOMETRY} :${DISPLAY} -localhost
+/usr/bin/vncserver -depth ${DEPTH} -geometry ${GEOMETRY} -deferupdate 100 :${DISPLAY} -localhost
 
-echo $PASS
+echo "Password: $PW"
+
